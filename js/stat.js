@@ -69,15 +69,15 @@ window.renderStatistics = function (ctx, names, times) {
 
     var columnHeight = times[j] * step;
     var columnPositionX = 150 + (columnWidth + distanceBetweenColumns) * j;
-    var columnPositionY = 110 + histogramHeight - columnHeight;
+    var columnPositionY = 100 + histogramHeight - columnHeight;
 
     var playerTime = '' + Math.round(times[j]);
     var playerName = '' + names[j];
 
-    ctx.textBaseline = 'alphabetic';
     ctx.fillText(playerTime, columnPositionX, columnPositionY - 5);
     ctx.fillRect(columnPositionX, columnPositionY, columnWidth, columnHeight);
     ctx.textBaseline = 'hanging';
-    ctx.fillText(playerName, columnPositionX, 265);
+    ctx.fillText(playerName, columnPositionX, 255);
+    ctx.textBaseline = 'alphabetic';
   }
 };
