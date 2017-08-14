@@ -1,6 +1,6 @@
 'use strict';
 
-window.renderStatistics = function (ctx, names, times) {
+var renderCloud = function (ctx) {
   ctx.beginPath();
   ctx.moveTo(100, 10);
 
@@ -27,7 +27,7 @@ window.renderStatistics = function (ctx, names, times) {
   ctx.closePath();
   ctx.stroke();
 
-  ctx.shadowColor = 'rgba(0, 0, 0, .7)';
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
   ctx.shadowOffsetX = 10;
   ctx.shadowOffsetY = 10;
 
@@ -36,6 +36,37 @@ window.renderStatistics = function (ctx, names, times) {
 
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
+};
+
+var renderColumn = function (ctx, max, columnNumber, time, name) {
+  if (name === 'Вы') {
+    ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+  } else {
+    ctx.fillStyle = 'rgba(0, 0, 255, ' + (0.2 + Math.random() * 0.8) + ')';
+  }
+
+  var histogramHeight = 150;
+  var step = histogramHeight / max;
+
+  var columnWidth = 40;
+  var distanceBetweenColumns = 50;
+  var columnHeight = time * step;
+  var columnPositionX = 150 + (columnWidth + distanceBetweenColumns) * columnNumber;
+  var columnPositionY = 100 + histogramHeight - columnHeight;
+
+  var playerTime = '' + Math.round(time);
+  var playerName = '' + name;
+
+  ctx.fillText(playerTime, columnPositionX, columnPositionY - 5);
+  ctx.fillRect(columnPositionX, columnPositionY, columnWidth, columnHeight);
+
+  ctx.textBaseline = 'hanging';
+  ctx.fillText(playerName, columnPositionX, 255);
+  ctx.textBaseline = 'alphabetic';
+};
+
+window.renderStatistics = function (ctx, names, times) {
+  renderCloud(ctx);
 
   ctx.fillStyle = '#000000';
   ctx.font = '16px PT Mono';
@@ -52,32 +83,9 @@ window.renderStatistics = function (ctx, names, times) {
     }
   }
 
-  var histogramHeight = 150;
-  var step = histogramHeight / max;
-
-  var columnWidth = 40;
-  var distanceBetweenColumns = 50;
-
   ctx.fillText('Худшее время: ' + max.toFixed(2) + 'мс у игрока ' + names[maxIndex], 130, 75);
 
   for (var j = 0; j < times.length; j++) {
-    if (names[j] === 'Вы') {
-      ctx.fillStyle = 'rgba(255, 0, 0, 1)';
-    } else {
-      ctx.fillStyle = 'rgba(0, 0, 255, ' + Math.random() + ')';
-    }
-
-    var columnHeight = times[j] * step;
-    var columnPositionX = 150 + (columnWidth + distanceBetweenColumns) * j;
-    var columnPositionY = 100 + histogramHeight - columnHeight;
-
-    var playerTime = '' + Math.round(times[j]);
-    var playerName = '' + names[j];
-
-    ctx.fillText(playerTime, columnPositionX, columnPositionY - 5);
-    ctx.fillRect(columnPositionX, columnPositionY, columnWidth, columnHeight);
-    ctx.textBaseline = 'hanging';
-    ctx.fillText(playerName, columnPositionX, 255);
-    ctx.textBaseline = 'alphabetic';
+    renderColumn(ctx, max, j, times[j], names[j]);
   }
 };
