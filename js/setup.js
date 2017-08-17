@@ -113,6 +113,6 @@ var wizards = [
   }
 ];
 
-var wizardsFragment = createWizards(wizards, similarWizardTemplate, 4);
+var wizardsFragment = createWizards(wizards, similarWizardTemplate, wizards.length);
 
 similarListElement.appendChild(wizardsFragment);
