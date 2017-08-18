@@ -37,29 +37,45 @@ var WIZARD_EYES_COLORS = [
 ];
 
 var generateIntegerNumber = function (maxNumber) {
-  var number = Math.floor(Math.random() * maxNumber);
-
-  return number;
+  return Math.floor(Math.random() * maxNumber);
 };
 
-var generateNames = function (names, surnames, amount) {
-  var fullNames = [];
+var checkSimilarityWizards = function (generatedWizards, newWizards) {
+  for (var i = 0, newWizardsLength = newWizards.length; i < newWizardsLength; i++) {
+    if (newWizards[i].coatColor === generatedWizards.coatColor && newWizards[i].eyesColor === generatedWizards.eyesColor) {
+      return true;
+    }
 
-  for (var i = 0; i < amount; i++) {
-    fullNames[i] = names[generateIntegerNumber(amount)] + ' ' + surnames[generateIntegerNumber(amount)];
+    if (newWizards[i].name === generatedWizards.name) {
+      return true;
+    }
   }
 
-  return fullNames;
+  return false;
 };
 
-var generateColors = function (colors, amount) {
-  var listOfColors = [];
+var getNewWizards = function (amountWizards) {
+  var newWizards = [];
+  var wizardNamesLength = WIZARD_NAMES.length;
+  var wizardSurnameLength = WIZARD_SURNAMES.length;
+  var wizardCoatColors = WIZARD_COAT_COLORS.length;
+  var wizardEyesColors = WIZARD_EYES_COLORS.length;
 
-  for (var i = 0; i < amount; i++) {
-    listOfColors[i] = colors[generateIntegerNumber(amount)];
+  for (var i = 0; i < amountWizards; i++) {
+    var generatedWizard = {};
+    generatedWizard.name = WIZARD_NAMES[generateIntegerNumber(wizardNamesLength)] + ' ' + WIZARD_SURNAMES[generateIntegerNumber(wizardSurnameLength)];
+    generatedWizard.coatColor = WIZARD_COAT_COLORS[generateIntegerNumber(wizardCoatColors)];
+    generatedWizard.eyesColor = WIZARD_EYES_COLORS[generateIntegerNumber(wizardEyesColors)];
+
+    if (checkSimilarityWizards(generatedWizard, newWizards)) {
+      i--;
+      continue;
+    }
+
+    newWizards[i] = generatedWizard;
   }
 
-  return listOfColors;
+  return newWizards;
 };
 
 var createWizards = function (wizards, pattern, amount) {
@@ -86,32 +102,7 @@ var wizardTemplate = document.querySelector('#similar-wizard-template').content;
 var similarListElement = userDialogFooter.querySelector('.setup-similar-list');
 var similarWizardTemplate = wizardTemplate.querySelector('.setup-similar-item');
 
-var fullNames = generateNames(WIZARD_NAMES, WIZARD_SURNAMES, 4);
-var coatColors = generateColors(WIZARD_COAT_COLORS, 4);
-var eyesColors = generateColors(WIZARD_EYES_COLORS, 4);
-
-var wizards = [
-  {
-    name: fullNames[0],
-    coatColor: coatColors[0],
-    eyesColor: eyesColors[0]
-  },
-  {
-    name: fullNames[1],
-    coatColor: coatColors[1],
-    eyesColor: eyesColors[1]
-  },
-  {
-    name: fullNames[2],
-    coatColor: coatColors[2],
-    eyesColor: eyesColors[2]
-  },
-  {
-    name: fullNames[3],
-    coatColor: coatColors[3],
-    eyesColor: eyesColors[3]
-  }
-];
+var wizards = getNewWizards(4);
 
 var wizardsFragment = createWizards(wizards, similarWizardTemplate, wizards.length);
 
