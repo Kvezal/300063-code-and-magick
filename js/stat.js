@@ -1,28 +1,16 @@
 'use strict';
 
-var renderCloud = function (ctx) {
+var renderCloud = function (ctx, coords) {
   ctx.beginPath();
   ctx.moveTo(100, 10);
 
-  ctx.bezierCurveTo(110, 0, 195, 0, 205, 25);
-  ctx.bezierCurveTo(220, 0, 295, 0, 310, 25);
-  ctx.bezierCurveTo(320, 0, 405, 0, 415, 25);
-  ctx.bezierCurveTo(425, 0, 510, 0, 520, 10);
-
-  ctx.bezierCurveTo(560, 30, 540, 80, 520, 95);
-  ctx.bezierCurveTo(530, 115, 530, 130, 520, 145);
-  ctx.bezierCurveTo(540, 165, 530, 180, 520, 195);
-  ctx.bezierCurveTo(540, 210, 560, 260, 520, 280);
-
-  ctx.bezierCurveTo(510, 290, 425, 290, 415, 265);
-  ctx.bezierCurveTo(405, 290, 320, 290, 310, 265);
-  ctx.bezierCurveTo(295, 290, 220, 290, 205, 265);
-  ctx.bezierCurveTo(195, 290, 110, 290, 100, 280);
-
-  ctx.bezierCurveTo(60, 260, 80, 210, 100, 195);
-  ctx.bezierCurveTo(90, 180, 80, 165, 100, 145);
-  ctx.bezierCurveTo(90, 130, 90, 115, 100, 95);
-  ctx.bezierCurveTo(80, 80, 60, 30, 100, 10);
+  coords.forEach(function (item) {
+    if (item.length === 6) {
+      ctx.bezierCurveTo.apply(ctx, item);
+    } else if (item.length === 2) {
+      ctx.lineTo.apply(ctx, item);
+    }
+  });
 
   ctx.closePath();
   ctx.stroke();
@@ -66,7 +54,26 @@ var renderColumn = function (ctx, max, columnNumber, time, name) {
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  renderCloud(ctx);
+  var positionCoords = [
+    [110, 0, 195, 0, 205, 25],
+    [220, 0, 295, 0, 310, 25],
+    [320, 0, 405, 0, 415, 25],
+    [425, 0, 510, 0, 520, 10],
+    [560, 30, 540, 80, 520, 95],
+    [530, 115, 530, 130, 520, 145],
+    [540, 165, 530, 180, 520, 195],
+    [540, 210, 560, 260, 520, 280],
+    [510, 290, 425, 290, 415, 265],
+    [405, 290, 320, 290, 310, 265],
+    [295, 290, 220, 290, 205, 265],
+    [195, 290, 110, 290, 100, 280],
+    [60, 260, 80, 210, 100, 195],
+    [90, 180, 80, 165, 100, 145],
+    [90, 130, 90, 115, 100, 95],
+    [80, 80, 60, 30, 100, 10]
+  ];
+
+  renderCloud(ctx, positionCoords);
 
   ctx.fillStyle = '#000000';
   ctx.font = '16px PT Mono';
@@ -75,17 +82,12 @@ window.renderStatistics = function (ctx, names, times) {
   var max = -1;
   var maxIndex = -1;
 
-  for (var i = 0; i < times.length; i++) {
-    var time = times[i];
-    if (time > max) {
-      max = time;
-      maxIndex = i;
-    }
-  }
+  max = Math.max.apply(null, times);
+  maxIndex = times.indexOf(max);
 
   ctx.fillText('Худшее время: ' + max.toFixed(2) + 'мс у игрока ' + names[maxIndex], 130, 75);
 
-  for (var j = 0; j < times.length; j++) {
-    renderColumn(ctx, max, j, times[j], names[j]);
-  }
+  times.forEach(function (time, index) {
+    renderColumn(ctx, max, index, time, names[index]);
+  });
 };
