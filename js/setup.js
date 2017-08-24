@@ -117,6 +117,15 @@ var changeColorElement = function (element, colors, prop) {
   }
 };
 
+var changeRandomHEXColorElement = function (element, colors, prop) {
+  if (HEXColorFireBallIndex < colors.length - 1) {
+    element.style[prop] = colors[++HEXColorFireBallIndex];
+  } else {
+    HEXColorFireBallIndex = 0;
+    element.style[prop] = colors[HEXColorFireBallIndex];
+  }
+};
+
 var setupPlayerClickHandler = function (evt) {
   var target = evt.target;
   var targetClass = target.classList;
@@ -126,7 +135,7 @@ var setupPlayerClickHandler = function (evt) {
   } else if (targetClass.contains('wizard-eyes')) {
     changeColorElement(target, WIZARD_EYES_COLORS, 'fill');
   } else if (targetClass.contains('setup-fireball')) {
-    changeColorElement(target, WIZARD_EYES_COLORS, 'background-color');
+    changeRandomHEXColorElement(target, WIZARD_FIREBALLS, 'background-color');
   }
 };
 
@@ -204,6 +213,8 @@ var wizards = getNewWizards(4);
 var wizardsFragment = createWizards(wizards, similarWizardTemplate, wizards.length);
 
 setupSimilarList.appendChild(wizardsFragment);
+
+var HEXColorFireBallIndex = 0;
 
 var setupPlayer = setup.querySelector('.setup-player');
 setupPlayer.addEventListener('click', setupPlayerClickHandler);
