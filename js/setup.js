@@ -1,5 +1,8 @@
 'use strict';
 
+var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
+
 var WIZARD_NAMES = [
   'Иван',
   'Хуан Себастьян',
@@ -34,6 +37,13 @@ var WIZARD_EYES_COLORS = [
   'blue',
   'yellow',
   'green'
+];
+var WIZARD_FIREBALLS = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
 ];
 
 var generateIntegerNumber = function (maxNumber) {
@@ -93,17 +103,117 @@ var createWizards = function (wizards, pattern, amount) {
   return wizardsBlock;
 };
 
-var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
-var userDialogFooter = userDialog.querySelector('.setup-similar');
-userDialogFooter.classList.remove('hidden');
+var changeColorElement = function (element, colors, prop) {
+  if (element.style[prop]) {
+    var currentColor = colors.indexOf(element.style[prop]);
+  } else {
+    currentColor = 0;
+  }
+
+  if (currentColor < colors.length - 1) {
+    element.style[prop] = colors[++currentColor];
+  } else {
+    element.style[prop] = colors[0];
+  }
+};
+
+var setupPlayerClickHandler = function (evt) {
+  var target = evt.target;
+  var targetClass = target.classList;
+
+  if (targetClass.contains('wizard-coat')) {
+    changeColorElement(target, WIZARD_COAT_COLORS, 'fill');
+  } else if (targetClass.contains('wizard-eyes')) {
+    changeColorElement(target, WIZARD_EYES_COLORS, 'fill');
+  } else if (targetClass.contains('setup-fireball')) {
+    changeColorElement(target, WIZARD_EYES_COLORS, 'background-color');
+  }
+};
+
+var popupEscPressHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    setup.classList.add('hidden');
+  }
+};
+
+var openPopup = function () {
+  setup.classList.remove('hidden');
+
+  document.addEventListener('keydown', popupEscPressHandler);
+};
+
+var closePopup = function () {
+  setup.classList.add('hidden');
+
+  document.removeEventListener('keydown', popupEscPressHandler);
+};
+
+var setup = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setup.querySelector('.setup-close');
+var setupUserName = setup.querySelector('.setup-user-name');
+var setupSubmit = setup.querySelector('.setup-submit');
+
+setupOpen.addEventListener('click', function () {
+  openPopup();
+});
+
+setupOpen.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+});
+
+setupClose.addEventListener('click', function () {
+  closePopup();
+});
+
+setupClose.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
+
+setupUserName.addEventListener('input', function (evt) {
+  var target = evt.target;
+
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  } else {
+    target.setCustomValidity('');
+  }
+});
+
+setupUserName.addEventListener('focus', function () {
+  document.removeEventListener('keydown', popupEscPressHandler);
+});
+
+setupUserName.addEventListener('focusout', function () {
+  document.addEventListener('keydown', popupEscPressHandler);
+});
+
+var setupSimilar = setup.querySelector('.setup-similar');
+setupSimilar.classList.remove('hidden');
 
 var wizardTemplate = document.querySelector('#similar-wizard-template').content;
-var similarListElement = userDialogFooter.querySelector('.setup-similar-list');
+var setupSimilarList = setupSimilar.querySelector('.setup-similar-list');
 var similarWizardTemplate = wizardTemplate.querySelector('.setup-similar-item');
 
 var wizards = getNewWizards(4);
 
 var wizardsFragment = createWizards(wizards, similarWizardTemplate, wizards.length);
 
-similarListElement.appendChild(wizardsFragment);
+setupSimilarList.appendChild(wizardsFragment);
+
+var setupPlayer = setup.querySelector('.setup-player');
+setupPlayer.addEventListener('click', setupPlayerClickHandler);
+
+setupSubmit.addEventListener('click', function () {
+  closePopup();
+});
+
+setupSubmit.addEventListener('keydown', function () {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+});
