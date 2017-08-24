@@ -212,7 +212,7 @@ setupSubmit.addEventListener('click', function () {
   closePopup();
 });
 
-setupSubmit.addEventListener('keydown', function () {
+setupSubmit.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     closePopup();
   }
