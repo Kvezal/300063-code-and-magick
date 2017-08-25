@@ -104,10 +104,11 @@ var createWizards = function (wizards, pattern, amount) {
 };
 
 var changeColorElement = function (element, colors, prop) {
-  if (element.style[prop]) {
-    var currentColor = colors.indexOf(element.style[prop]);
-  } else {
-    currentColor = 0;
+  var colorElement = element.style[prop];
+  var currentColor = 0;
+
+  if (colorElement) {
+    currentColor = colors.indexOf(colorElement);
   }
 
   if (currentColor < colors.length - 1) {
@@ -124,6 +125,50 @@ var changeRandomHEXColorElement = function (element, colors, prop) {
     HEXColorFireBallIndex = 0;
     element.style[prop] = colors[HEXColorFireBallIndex];
   }
+};
+
+var setupOpenClickHandler = function () {
+  openPopup();
+};
+
+var setupOpenEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+};
+
+var setupCloseClickHandler = function () {
+  closePopup();
+};
+
+var setupCloseEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+};
+
+var setupUserNameInputHandler = function (evt) {
+  var target = evt.target;
+
+  target.setCustomValidity('');
+
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  }
+};
+
+var setupUserNameFocusHandler = function () {
+  document.removeEventListener('keydown', popupEscPressHandler);
+
+  setupSubmit.removeEventListener('click', setupSubmitClickHandler);
+  setupSubmit.removeEventListener('keydown', setupSubmitEnterPressHandler);
+};
+
+var setupUserNameFocusoutHandler = function () {
+  document.addEventListener('keydown', popupEscPressHandler);
+
+  setupSubmit.addEventListener('click', setupSubmitClickHandler);
+  setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
 };
 
 var setupPlayerClickHandler = function (evt) {
@@ -145,6 +190,18 @@ var popupEscPressHandler = function (evt) {
   }
 };
 
+var setupSubmitClickHandler = function () {
+  if (setupUserName.value.length >= 2) {
+    closePopup();
+  }
+};
+
+var setupSubmitEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE && setupUserName.value.length >= 2) {
+    closePopup();
+  }
+};
+
 var openPopup = function () {
   setup.classList.remove('hidden');
 
@@ -163,43 +220,15 @@ var setupClose = setup.querySelector('.setup-close');
 var setupUserName = setup.querySelector('.setup-user-name');
 var setupSubmit = setup.querySelector('.setup-submit');
 
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
+setupOpen.addEventListener('click', setupOpenClickHandler);
+setupOpen.addEventListener('keydown', setupOpenEnterPressHandler);
 
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
+setupClose.addEventListener('click', setupCloseClickHandler);
+setupClose.addEventListener('keydown', setupCloseEnterPressHandler);
 
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
-
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
-
-setupUserName.addEventListener('input', function (evt) {
-  var target = evt.target;
-
-  if (target.value.length < 2) {
-    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
-  } else {
-    target.setCustomValidity('');
-  }
-});
-
-setupUserName.addEventListener('focus', function () {
-  document.removeEventListener('keydown', popupEscPressHandler);
-});
-
-setupUserName.addEventListener('focusout', function () {
-  document.addEventListener('keydown', popupEscPressHandler);
-});
+setupUserName.addEventListener('input', setupUserNameInputHandler);
+setupUserName.addEventListener('focus', setupUserNameFocusHandler);
+setupUserName.addEventListener('focusout', setupUserNameFocusoutHandler);
 
 var setupSimilar = setup.querySelector('.setup-similar');
 setupSimilar.classList.remove('hidden');
@@ -219,12 +248,5 @@ var HEXColorFireBallIndex = 0;
 var setupPlayer = setup.querySelector('.setup-player');
 setupPlayer.addEventListener('click', setupPlayerClickHandler);
 
-setupSubmit.addEventListener('click', function () {
-  closePopup();
-});
-
-setupSubmit.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
+setupSubmit.addEventListener('click', setupSubmitClickHandler);
+setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
