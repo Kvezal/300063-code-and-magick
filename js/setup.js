@@ -1,5 +1,8 @@
 'use strict';
 
+var ENTER_KEYCODE = 13;
+var ESC_KEYCODE = 27;
+
 var WIZARD_NAMES = [
   'Иван',
   'Хуан Себастьян',
@@ -34,6 +37,13 @@ var WIZARD_EYES_COLORS = [
   'blue',
   'yellow',
   'green'
+];
+var WIZARD_FIREBALLS = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848'
 ];
 
 var generateIntegerNumber = function (maxNumber) {
@@ -93,17 +103,150 @@ var createWizards = function (wizards, pattern, amount) {
   return wizardsBlock;
 };
 
-var userDialog = document.querySelector('.setup');
-userDialog.classList.remove('hidden');
-var userDialogFooter = userDialog.querySelector('.setup-similar');
-userDialogFooter.classList.remove('hidden');
+var changeColorElement = function (element, colors, prop) {
+  var colorElement = element.style[prop];
+  var currentColor = 0;
+
+  if (colorElement) {
+    currentColor = colors.indexOf(colorElement);
+  }
+
+  if (currentColor < colors.length - 1) {
+    element.style[prop] = colors[++currentColor];
+  } else {
+    element.style[prop] = colors[0];
+  }
+};
+
+var changeRandomHEXColorElement = function (element, colors, prop) {
+  if (HEXColorFireBallIndex < colors.length - 1) {
+    element.style[prop] = colors[++HEXColorFireBallIndex];
+  } else {
+    HEXColorFireBallIndex = 0;
+    element.style[prop] = colors[HEXColorFireBallIndex];
+  }
+};
+
+var setupOpenClickHandler = function () {
+  openPopup();
+};
+
+var setupOpenEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    openPopup();
+  }
+};
+
+var setupCloseClickHandler = function () {
+  closePopup();
+};
+
+var setupCloseEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closePopup();
+  }
+};
+
+var setupUserNameInputHandler = function (evt) {
+  var target = evt.target;
+
+  target.setCustomValidity('');
+
+  if (target.value.length < 2) {
+    target.setCustomValidity('Имя должно состоять минимум из 2-х символов');
+  }
+};
+
+var setupUserNameFocusHandler = function () {
+  document.removeEventListener('keydown', popupEscPressHandler);
+
+  setupSubmit.removeEventListener('click', setupSubmitClickHandler);
+  setupSubmit.removeEventListener('keydown', setupSubmitEnterPressHandler);
+};
+
+var setupUserNameFocusoutHandler = function () {
+  document.addEventListener('keydown', popupEscPressHandler);
+
+  setupSubmit.addEventListener('click', setupSubmitClickHandler);
+  setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
+};
+
+var setupPlayerClickHandler = function (evt) {
+  var target = evt.target;
+  var targetClass = target.classList;
+
+  if (targetClass.contains('wizard-coat')) {
+    changeColorElement(target, WIZARD_COAT_COLORS, 'fill');
+  } else if (targetClass.contains('wizard-eyes')) {
+    changeColorElement(target, WIZARD_EYES_COLORS, 'fill');
+  } else if (targetClass.contains('setup-fireball')) {
+    changeRandomHEXColorElement(target, WIZARD_FIREBALLS, 'background-color');
+  }
+};
+
+var popupEscPressHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    setup.classList.add('hidden');
+  }
+};
+
+var setupSubmitClickHandler = function () {
+  if (setupUserName.value.length >= 2) {
+    closePopup();
+  }
+};
+
+var setupSubmitEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE && setupUserName.value.length >= 2) {
+    closePopup();
+  }
+};
+
+var openPopup = function () {
+  setup.classList.remove('hidden');
+
+  document.addEventListener('keydown', popupEscPressHandler);
+};
+
+var closePopup = function () {
+  setup.classList.add('hidden');
+
+  document.removeEventListener('keydown', popupEscPressHandler);
+};
+
+var setup = document.querySelector('.setup');
+var setupOpen = document.querySelector('.setup-open');
+var setupClose = setup.querySelector('.setup-close');
+var setupUserName = setup.querySelector('.setup-user-name');
+var setupSubmit = setup.querySelector('.setup-submit');
+
+setupOpen.addEventListener('click', setupOpenClickHandler);
+setupOpen.addEventListener('keydown', setupOpenEnterPressHandler);
+
+setupClose.addEventListener('click', setupCloseClickHandler);
+setupClose.addEventListener('keydown', setupCloseEnterPressHandler);
+
+setupUserName.addEventListener('input', setupUserNameInputHandler);
+setupUserName.addEventListener('focus', setupUserNameFocusHandler);
+setupUserName.addEventListener('focusout', setupUserNameFocusoutHandler);
+
+var setupSimilar = setup.querySelector('.setup-similar');
+setupSimilar.classList.remove('hidden');
 
 var wizardTemplate = document.querySelector('#similar-wizard-template').content;
-var similarListElement = userDialogFooter.querySelector('.setup-similar-list');
+var setupSimilarList = setupSimilar.querySelector('.setup-similar-list');
 var similarWizardTemplate = wizardTemplate.querySelector('.setup-similar-item');
 
 var wizards = getNewWizards(4);
 
 var wizardsFragment = createWizards(wizards, similarWizardTemplate, wizards.length);
 
-similarListElement.appendChild(wizardsFragment);
+setupSimilarList.appendChild(wizardsFragment);
+
+var HEXColorFireBallIndex = 0;
+
+var setupPlayer = setup.querySelector('.setup-player');
+setupPlayer.addEventListener('click', setupPlayerClickHandler);
+
+setupSubmit.addEventListener('click', setupSubmitClickHandler);
+setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
