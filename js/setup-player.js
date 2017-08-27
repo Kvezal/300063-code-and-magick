@@ -59,14 +59,14 @@
   };
 
   var setupUserNameFocusHandler = function () {
-    document.removeEventListener('keydown', window.util.popupEscPressHandler);
+    document.removeEventListener('keydown', window.dialog.popupEscPressHandler);
 
     setupSubmit.removeEventListener('click', setupSubmitClickHandler);
     setupSubmit.removeEventListener('keydown', setupSubmitEnterPressHandler);
   };
 
   var setupUserNameFocusoutHandler = function () {
-    document.addEventListener('keydown', window.util.popupEscPressHandler);
+    document.addEventListener('keydown', window.dialog.popupEscPressHandler);
 
     setupSubmit.addEventListener('click', setupSubmitClickHandler);
     setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
@@ -74,28 +74,29 @@
 
   var setupSubmitClickHandler = function () {
     if (setupUserName.value.length >= 2) {
-      window.util.closePopup();
+      window.dialog.closePopup();
     }
   };
 
   var setupSubmitEnterPressHandler = function (evt) {
     if (setupUserName.value.length >= 2) {
-      window.util.isEnterEvent(evt, window.util.closePopup);
+      window.dialog.isEnterEvent(evt, window.dialog.closePopup);
     }
   };
 
   var HEXColorFireBallIndex = 0;
 
-  var setupPlayer = window.util.setup.querySelector('.setup-player');
+  var setup = window.renderingWizards.getSetupElement;
+  var setupPlayer = setup.querySelector('.setup-player');
   setupPlayer.addEventListener('click', setupPlayerClickHandler);
 
-  var setupUserName = window.util.setup.querySelector('.setup-user-name');
+  var setupUserName = setup.querySelector('.setup-user-name');
 
   setupUserName.addEventListener('input', setupUserNameInputHandler);
   setupUserName.addEventListener('focus', setupUserNameFocusHandler);
   setupUserName.addEventListener('focusout', setupUserNameFocusoutHandler);
 
-  var setupSubmit = window.util.setup.querySelector('.setup-submit');
+  var setupSubmit = setup.querySelector('.setup-submit');
 
   setupSubmit.addEventListener('click', setupSubmitClickHandler);
   setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
