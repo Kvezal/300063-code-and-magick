@@ -48,7 +48,10 @@
 
     var mouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
-      setupUserAvatar.classList.add('hidden');
+
+      if (!setupUserAvatar.classList.contains('hidden')) {
+        setupUserAvatar.classList.add('hidden');
+      }
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,

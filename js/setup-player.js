@@ -100,4 +100,75 @@
 
   setupSubmit.addEventListener('click', setupSubmitClickHandler);
   setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
+
+  var shop = setup.querySelector('.setup-artifacts-shop');
+  var shopElements = shop.querySelectorAll('.setup-artifacts-cell img');
+  shopElements.forEach(function (item) {
+    item.draggable = true;
+  });
+
+  var setupArtifacts = setup.querySelector('.setup-artifacts');
+
+  var draggedItem = null;
+
+  shop.addEventListener('dragstart', function (evt) {
+    if (evt.target.tagName === 'IMG') {
+      draggedItem = evt.target.cloneNode(true);
+      evt.dataTransfer.setData('text/plain', draggedItem);
+    }
+  });
+
+  setupArtifacts.addEventListener('dragstart', function (evt) {
+    if (evt.target.tagName === 'IMG') {
+      draggedItem = evt.target;
+      evt.dataTransfer.setData('text/plain', draggedItem);
+    }
+  });
+
+  setupArtifacts.addEventListener('dragover', function (evt) {
+    evt.preventDefault();
+  });
+
+  setupArtifacts.addEventListener('drop', function (evt) {
+    var target = evt.target;
+
+    if (target.tagName === 'IMG') {
+      target = target.parentElement;
+    }
+
+    target.style.backgroundColor = '';
+    target.style.outline = '';
+
+    if (!evt.target.children.length && evt.target.tagName !== 'IMG') {
+      evt.target.appendChild(draggedItem);
+    }
+  });
+
+  setupArtifacts.addEventListener('dragenter', function (evt) {
+    var target = evt.target;
+
+    if (target.tagName === 'IMG') {
+      target = target.parentElement;
+    }
+
+    target.style.backgroundColor = 'yellow';
+
+    if (target.children.length === 0 && target.tagName !== 'IMG') {
+      target.style.outline = '2px solid red';
+    }
+
+    evt.preventDefault();
+  });
+
+  setupArtifacts.addEventListener('dragleave', function (evt) {
+    var target = evt.target;
+
+    if (target.tagName === 'IMG') {
+      target = target.parentElement;
+    }
+
+    target.style.backgroundColor = '';
+    target.style.outline = '';
+    evt.preventDefault();
+  });
 })();
