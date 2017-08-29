@@ -25,4 +25,8 @@
   var wizardsFragment = createWizards(window.wizardsGeneration, similarWizardTemplate, window.wizardsGeneration.length);
 
   setupSimilarList.appendChild(wizardsFragment);
+
+  window.renderingWizards = {
+    getSetupElement: setup
+  };
 })();
