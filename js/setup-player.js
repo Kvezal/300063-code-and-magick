@@ -84,7 +84,7 @@
 
   var shop = setup.querySelector('.setup-artifacts-shop');
   var shopElements = shop.querySelectorAll('.setup-artifacts-cell img');
-  shopElements.forEach(function (item) {
+  [].forEach.call(shopElements, function (item) {
     item.draggable = true;
   });
 
