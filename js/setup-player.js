@@ -123,6 +123,8 @@
     if (!evt.target.children.length && evt.target.tagName !== 'IMG') {
       evt.target.appendChild(draggedItem);
     }
+
+    evt.preventDefault();
   });
 
   setupArtifacts.addEventListener('dragenter', function (evt) {
