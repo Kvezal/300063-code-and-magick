@@ -9,30 +9,12 @@
     '#e6e848'
   ];
 
-  var changeColorElement = function (element, colors, prop) {
-    var colorElement = element.style[prop];
-    var currentColor = 0;
-
-    if (colorElement) {
-      currentColor = colors.indexOf(colorElement);
-    }
-
-    if (currentColor < colors.length - 1) {
-      element.style[prop] = colors[++currentColor];
-      return;
-    }
-
-    element.style[prop] = colors[0];
+  var fillElement = function (element, color) {
+    element.style.fill = color;
   };
 
-  var changeRandomHEXColorElement = function (element, colors, prop) {
-    if (HEXColorFireBallIndex < colors.length - 1) {
-      element.style[prop] = colors[++HEXColorFireBallIndex];
-      return;
-    }
-
-    HEXColorFireBallIndex = 0;
-    element.style[prop] = colors[HEXColorFireBallIndex];
+  var changeElementBackground = function (element, color) {
+    element.style.backgroundColor = color;
   };
 
   var setupPlayerClickHandler = function (evt) {
@@ -40,11 +22,11 @@
     var targetClass = target.classList;
 
     if (targetClass.contains('wizard-coat')) {
-      changeColorElement(target, window.parametersWizards.WIZARD_COAT_COLORS, 'fill');
+      window.colorizeElement(target, window.parametersWizards.WIZARD_COAT_COLORS, fillElement);
     } else if (targetClass.contains('wizard-eyes')) {
-      changeColorElement(target, window.parametersWizards.WIZARD_EYES_COLORS, 'fill');
+      window.colorizeElement(target, window.parametersWizards.WIZARD_EYES_COLORS, fillElement);
     } else if (targetClass.contains('setup-fireball')) {
-      changeRandomHEXColorElement(target, WIZARD_FIREBALLS, 'background-color');
+      window.colorizeElement(target, WIZARD_FIREBALLS, changeElementBackground);
     }
   };
 
@@ -84,10 +66,9 @@
     }
   };
 
-  var HEXColorFireBallIndex = 0;
-
   var setup = window.renderingWizards.getSetupElement;
   var setupPlayer = setup.querySelector('.setup-player');
+
   setupPlayer.addEventListener('click', setupPlayerClickHandler);
 
   var setupUserName = setup.querySelector('.setup-user-name');
