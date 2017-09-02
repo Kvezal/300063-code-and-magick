@@ -26,7 +26,7 @@
     });
   };
 
-  var setup = window.renderingWizards.getSetupElement;
+  var setup = document.querySelector('.setup');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
   var dialogHandle = setup.querySelector('.upload');

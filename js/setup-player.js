@@ -17,6 +17,14 @@
     element.style.backgroundColor = color;
   };
 
+  var formSubmitHandler = function (evt) {
+    if (setupUserName.value.length >= 2) {
+      window.backend.save(new FormData(form), window.dialog.closePopup, window.backend.displayError);
+    }
+
+    evt.preventDefault();
+  };
+
   var setupPlayerClickHandler = function (evt) {
     var target = evt.target;
     var targetClass = target.classList;
@@ -42,53 +50,34 @@
 
   var setupUserNameFocusHandler = function () {
     document.removeEventListener('keydown', window.dialog.popupEscPressHandler);
-
-    setupSubmit.removeEventListener('click', setupSubmitClickHandler);
-    setupSubmit.removeEventListener('keydown', setupSubmitEnterPressHandler);
   };
 
   var setupUserNameFocusoutHandler = function () {
     document.addEventListener('keydown', window.dialog.popupEscPressHandler);
-
-    setupSubmit.addEventListener('click', setupSubmitClickHandler);
-    setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
   };
 
-  var setupSubmitClickHandler = function () {
-    if (setupUserName.value.length >= 2) {
-      window.dialog.closePopup();
-    }
-  };
+  var setup = document.querySelector('.setup');
+  var form = setup.querySelector('.setup-wizard-form');
 
-  var setupSubmitEnterPressHandler = function (evt) {
-    if (setupUserName.value.length >= 2) {
-      window.dialog.isEnterEvent(evt, window.dialog.closePopup);
-    }
-  };
+  form.addEventListener('submit', formSubmitHandler);
 
-  var setup = window.renderingWizards.getSetupElement;
-  var setupPlayer = setup.querySelector('.setup-player');
+  var setupPlayer = form.querySelector('.setup-player');
 
   setupPlayer.addEventListener('click', setupPlayerClickHandler);
 
-  var setupUserName = setup.querySelector('.setup-user-name');
+  var setupUserName = form.querySelector('.setup-user-name');
 
   setupUserName.addEventListener('input', setupUserNameInputHandler);
   setupUserName.addEventListener('focus', setupUserNameFocusHandler);
   setupUserName.addEventListener('focusout', setupUserNameFocusoutHandler);
 
-  var setupSubmit = setup.querySelector('.setup-submit');
-
-  setupSubmit.addEventListener('click', setupSubmitClickHandler);
-  setupSubmit.addEventListener('keydown', setupSubmitEnterPressHandler);
-
-  var shop = setup.querySelector('.setup-artifacts-shop');
-  var shopElements = shop.querySelectorAll('.setup-artifacts-cell img');
+  var shop = form.querySelector('.setup-artifacts-shop');
+  var shopElements = form.querySelectorAll('.setup-artifacts-cell img');
   [].forEach.call(shopElements, function (item) {
     item.draggable = true;
   });
 
-  var setupArtifacts = setup.querySelector('.setup-artifacts');
+  var setupArtifacts = form.querySelector('.setup-artifacts');
 
   var draggedItem = null;
 
