@@ -1,21 +1,6 @@
 'use strict';
 
 (function () {
-  var WIZARD_FIREBALLS = [
-    '#ee4830',
-    '#30a8ee',
-    '#5ce6c0',
-    '#e848d5',
-    '#e6e848'
-  ];
-
-  var fillElement = function (element, color) {
-    element.style.fill = color;
-  };
-
-  var changeElementBackground = function (element, color) {
-    element.style.backgroundColor = color;
-  };
 
   var formSubmitHandler = function (evt) {
     if (setupUserName.value.length >= 2) {
@@ -23,19 +8,6 @@
     }
 
     evt.preventDefault();
-  };
-
-  var setupPlayerClickHandler = function (evt) {
-    var target = evt.target;
-    var targetClass = target.classList;
-
-    if (targetClass.contains('wizard-coat')) {
-      window.colorizeElement(target, window.parametersWizards.WIZARD_COAT_COLORS, fillElement);
-    } else if (targetClass.contains('wizard-eyes')) {
-      window.colorizeElement(target, window.parametersWizards.WIZARD_EYES_COLORS, fillElement);
-    } else if (targetClass.contains('setup-fireball')) {
-      window.colorizeElement(target, WIZARD_FIREBALLS, changeElementBackground);
-    }
   };
 
   var setupUserNameInputHandler = function (evt) {
@@ -56,14 +28,9 @@
     document.addEventListener('keydown', window.dialog.popupEscPressHandler);
   };
 
-  var setup = document.querySelector('.setup');
-  var form = setup.querySelector('.setup-wizard-form');
+  var form = document.querySelector('.setup-wizard-form');
 
   form.addEventListener('submit', formSubmitHandler);
-
-  var setupPlayer = form.querySelector('.setup-player');
-
-  setupPlayer.addEventListener('click', setupPlayerClickHandler);
 
   var setupUserName = form.querySelector('.setup-user-name');
 
