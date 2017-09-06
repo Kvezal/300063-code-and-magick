@@ -5,6 +5,9 @@
   var ESC_KEYCODE = 27;
 
   window.utils = {
+    ENTER_KEYCODE: ENTER_KEYCODE,
+    ESC_KEYCODE: ESC_KEYCODE,
+
     isEnterEvent: function (evt, action) {
       if (evt.keyCode === ENTER_KEYCODE) {
         action();
