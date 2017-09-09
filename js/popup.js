@@ -4,7 +4,7 @@
   var OFFSET = 10; // px
 
   var popupElement = document.createElement('div');
-  popupElement.classList.add('wizard-artifacts');
+  popupElement.classList.add('popup');
   popupElement.style.display = 'none';
   document.body.appendChild(popupElement);
 

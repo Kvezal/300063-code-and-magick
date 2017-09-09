@@ -1,7 +1,21 @@
 'use strict';
 
 (function () {
+
   var wizardTemplate = document.querySelector('#similar-wizard-template');
+
+  var renderWizardArtifacts = function (wizard) {
+    var content = document.createDocumentFragment();
+
+    wizard.artifacts.map(function (item) {
+      var artifact = document.createElement('div');
+      artifact.textContent = item.name;
+
+      content.appendChild(artifact);
+    });
+
+    return content;
+  };
 
   var renderWizard = function (wizard) {
     var element = wizardTemplate.content.cloneNode(true);
@@ -11,6 +25,10 @@
     wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
 
     element.querySelector('.setup-similar-label').textContent = wizard.name;
+
+    window.popup(wizardElement, function () {
+      return renderWizardArtifacts(wizard);
+    });
 
     return element;
   };

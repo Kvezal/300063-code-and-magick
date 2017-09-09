@@ -956,13 +956,3 @@ input[type=radio]:checked + .review-mark-label {
 .error-message-button:hover::after {
   box-shadow: 0 0 5px #ffffff;
 }
-
-.wizard-artifacts {
-  position: absolute;
-  z-index: 20;
-
-  min-width: 200px;
-
-  background-color: #414342;
-  border: 2px solid #000000;
-}
